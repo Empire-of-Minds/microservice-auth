@@ -1,0 +1,74 @@
+name: Generate Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+jobs:
+  release:
+    if: |
+      github.event.pull_request.merged == true &&
+      ${{ !contains(github.event.pull_request.title, '[Chore] Update changelog') }}
+    name: SemVer release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git config --global user.email github-actions@github.com
+          git config --global user.name github-actions
+
+      - name: Prepare SemVer release
+        id: prepare-release
+        uses: cocogitto/cocogitto-action@v3.5
+        with:
+          git-user-email: "github-actions@github.com"
+          git-user: "github-actions"
+          check-latest-tag-only: true
+          release: true
+
+      - name: Generate Changelog
+        id: generate-changelog
+        run: |
+          {
+            echo 'CHANGELOG<<EOF'
+            cog changelog --at ${{ steps.prepare-release.outputs.version }} -t full_hash
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create Pull Request
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update changelog"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: update-changelog
+          delete-branch: true
+          title: "[Chore] Update changelog"
+          body: ${{ steps.generate-changelog.outputs.CHANGELOG }}
+          labels: |
+            documentation
+            automated pr
+          assignees: Cyboooooorg
+          reviewers: Cyboooooorg
+          draft: false
+
+      - name: Upload github release
+        uses: softprops/action-gh-release@v1
+        with:
+          body: ${{ steps.generate-changelog.outputs.CHANGELOG }}
+          tag_name: ${{ steps.prepare-release.outputs.version }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable Pull Request Automerge
+        run: gh pr merge --merge --auto -d "${{ steps.create-pull-request.outputs.pull-request-number }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
