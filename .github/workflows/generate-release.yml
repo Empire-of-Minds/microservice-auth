@@ -10,7 +10,7 @@ jobs:
   release:
     if: |
       github.event.pull_request.merged == true &&
-      ${{ !contains(github.event.pull_request.title, '[Chore] Update changelog') }}
+      ${{ !contains(github.event.pull_request.title, 'chore(changelog): bump version to') }}
     name: SemVer release
     runs-on: ubuntu-latest
     steps:
