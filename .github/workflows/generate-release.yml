@@ -10,7 +10,7 @@ jobs:
   release:
     if: |
       github.event.pull_request.merged == true &&
-      ${{ !contains(github.event.pull_request.title, '[Chore] Update changelog') }}
+      ${{ !contains(github.event.pull_request.title, 'chore(changelog): bump version to') }}
     name: SemVer release
     runs-on: ubuntu-latest
     steps:
@@ -52,7 +52,7 @@ jobs:
           signoff: false
           branch: update-changelog
           delete-branch: true
-          title: "[Chore] Update changelog"
+          title: "chore(changelog): bump version to ${{ steps.prepare-release.outputs.version }}"
           body: ${{ steps.generate-changelog.outputs.CHANGELOG }}
           labels: |
             documentation
