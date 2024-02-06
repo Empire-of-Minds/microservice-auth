@@ -73,7 +73,7 @@ git clone git@github.com:Empire-of-Minds/microservice-auth.git
 and go to the project directory before switching to the `staging` branch:
 
 ```sh
-cd service-competitive-intelligence && git switch staging
+cd microservice-auth && git switch staging
 ```
 
 This project uses conventional commits to manage the versioning of the project. You can find more information about conventional commits [here](https://www.conventionalcommits.org/en/v1.0.0/).
