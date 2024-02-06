@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "microservice-auth"
+version = "0.0.0"
+description = ""
+authors = ["Cyboooooorg <martin.crampon@hotmail.fr>"]
+readme = ""
+packages = []
+
+[tool.poetry.dependencies]
+python = "^3.11.5"
+fastapi = "^0.104.1"
+uvicorn = "^0.27.0.post1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
