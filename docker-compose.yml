@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: .docker/microservice-auth/build/Dockerfile
+      target: dev-build
+      args:
+        UID: $UID
+    image: microservice-auth:local
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/home/microservice-auth/workspace:rw
