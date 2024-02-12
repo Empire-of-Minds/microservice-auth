@@ -25,7 +25,7 @@ ARG USR_HOME=/home/${USR_NAME}
 # Stage 01 - Build
 # This stage is used to build the application (for development and production)
 # ------------------------------------------------------------------------------------------ #
-FROM python:3.11.5-slim-bullseye AS build
+FROM python:3.11.5-bullseye AS build
 
 # Re declare arguments
 ARG PROJECT

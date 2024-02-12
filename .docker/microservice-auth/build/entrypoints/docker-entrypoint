@@ -1,4 +1,7 @@
 #!/bin/bash
 
-# Start the application
-sleep infinity
+# Activate virtual environment
+source /opt/.venv/bin/activate
+
+# Run the application
+cd resources/ && python -m server

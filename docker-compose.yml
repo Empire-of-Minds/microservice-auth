@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  app-service-api:
     build:
       context: .
       dockerfile: .docker/microservice-auth/build/Dockerfile

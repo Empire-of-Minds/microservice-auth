@@ -1,0 +1,43 @@
+version: 1
+disable_existing_loggers: True
+formatters:
+  default:
+    "()": uvicorn.logging.DefaultFormatter
+    format: "%(asctime)s - [%(levelname)s] [%(threadName)s] %(name)s::%(funcName)s %(message)s (%(filename)s:%(lineno)d)"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    use_colors: True
+  access:
+    "()": uvicorn.logging.AccessFormatter
+    format: "%(asctime)s - [%(levelname)s] [%(threadName)s] %(name)s::%(funcName)s %(message)s (%(filename)s:%(lineno)d)"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+    use_colors: True
+filters:
+  healthcheck_filter:
+    "()": app.libs.logger.HealthCheckFilter
+handlers:
+  default:
+    formatter: default
+    class: logging.StreamHandler
+    stream: ext://sys.stderr
+  access:
+    formatter: access
+    class: logging.StreamHandler
+    stream: ext://sys.stdout
+    filters:
+      - healthcheck_filter
+loggers:
+  uvicorn.error:
+    level: INFO
+    handlers:
+      - default
+    propagate: no
+  uvicorn.access:
+    level: INFO
+    handlers:
+      - access
+    propagate: no
+root:
+  level: DEBUG
+  handlers:
+    - default
+  propagate: no
